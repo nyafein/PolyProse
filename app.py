@@ -16,13 +16,20 @@ with tabs[0]:
     # GOOGLE TRANSLATE / HANDLE INPUT
     def translate_text(target: str, text: str) -> dict:
         """Translates text into the target language."""
-        # translate_client = translate.Client() <-- This was only for local
-        # NEW: Create translate client using API key from Streamlit secrets <-- This is to use API
-        translate_client = translate.Client(api_key=st.secrets["GOOGLE_APPLICATION_CREDENTIALS"])
+        # OLD CODE: Create translate client for local use
+        # translate_client = translate.Client()
+        # NEW: Create translate client using service account credentials from Streamlit secrets
+        translate_client = translate.Client(
+            credentials=st.secrets["google_translate"]["private_key"],
+            project=st.secrets["google_translate"]["project_id"]
+        )
         if isinstance(text, bytes):
             text = text.decode("utf-8")
+        # Translate the text
         result = translate_client.translate(text, target_language=target)
         return result
+
+
 
 
     # LANGUAGE DROPDOWN - If more time, I would have liked to add more...
