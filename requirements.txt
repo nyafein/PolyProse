@@ -1,2 +1,7 @@
-streamlit
+streamlit~=1.38.0
 streamlit_mic_recorder
+google-cloud-translate==2.0.1
+
+openai~=1.51.2
+transformers~=4.45.2
+safetensors~=0.4.5
