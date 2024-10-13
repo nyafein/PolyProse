@@ -20,8 +20,7 @@ with tabs[0]:
         # translate_client = translate.Client()
         # NEW: Create translate client using service account credentials from Streamlit secrets
         translate_client = translate.Client(
-            credentials=st.secrets["google_translate"]["private_key"],
-            project=st.secrets["google_translate"]["project_id"]
+            credentials=st.secrets["google_translate"]["private_key"]
         )
         if isinstance(text, bytes):
             text = text.decode("utf-8")
