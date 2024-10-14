@@ -1,5 +1,21 @@
 .streamlit/secrets.toml
 
+[google_translate]
+{
+  "type": "service_account",
+  "project_id": "shaped-infusion-435301-r4",
+  "private_key_id": "93b9a231749702eced1d780c397d27d465fe5ef5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD4QlVGIf+Juxkn\nIGOM2ROxATSpogn4BBotzSz7n1HCNyoD9MADkNOrPVDFTnCjb7KFv38uJnurBfzf\nfq3a6/bzkFrsBzzZcpCppPpNrcwUFLSJe9bN1Rx/rj0JwQz1BVRnhLh7owiud6h1\nq5VEgShATHGBDsfEvtbE/iMkmFaJN+I7ZczUOtAgmoQ4lY5HTzCzmpoFO+MzDreh\ny7SFjWAWIM23PZ69SVkrAR8nyGd9Yy6CGj5nPP2WhbbQNJCRFBKcBK8L4CO91AXB\nCfdGyADvGf1xLPrS01iMNHEr/9EIg2OJT1YPVlyMNqW70DsuC4aeA6HeSIxYi3gX\nB4o8eInLAgMBAAECggEAWXxXjoMcwEGvrFnRaGiq32em2upsm3inExFdAIoKB26o\n92oWeHKQya29WpGOqmrNt8YyCqmWdCwhXVIlSr85ccv76g4l0d+o421zR+K4qBha\nhyAbanBB6IgeulBa4kr8hJ/je7VloLXDBD9H+7xujNbBJxrzyShc8/8DHeLHdof3\nhk+rQHbXWs0QKQugocQ7B1bA9iE4okhVuLtD3h6aIbi94XIaeZsp7Be42sxJ7e9f\nAK8oeQRLBbUKHh9dtxw73L71jFA5zDR6tii6SAb786aj/pR7/p9D59XQt/Ysm9Wx\nccbIEZ0K/TuxNZd+SOS+sd9RCfUr+P/4L5cbhUgC+QKBgQD9YxW6M99cXhezolvh\nATFKsNEPcseuPPEWk1zhlTLrCSLIPmq7YXYpeS1qNw4aEIHCYVTn/+WMTgA6Y6mU\nAxkG7P7QJ/hXVfH2KzZWYH5xdbQUTARxWMH+I+YZUgPFNu/3Fxbhu+xtMYTWp2aF\ngA+eDL8MiF2Naxym2gP+X/i4bQKBgQD60bYFKl/75ZMdKL4QWfMmLkn3UlR9ZoyD\nH8htgx+Ix/7AcyJ0Fq26b8eq5lVnLqQY2IqLr9I+7JoqK5ILCdNDgTehaNrebEIW\nZ9SDKnANpvMx93nDoF+W/tVi9jR6gbGffmNOHxpXn7fcp8Es9QfHghth5paWheBJ\n2NAPHRTYFwKBgBsjQJF3usVewnUXv3Vitk/Eji90YJR1rHB5ieoTG6f2i4YcwTue\nXZRliQqmKNl7yRnzaK+MRZ54QCgAwom6pzSJr2TF0yAvcUGnMSOhJAmszIOb/KHT\nGrvIRn2RvhuiHaM+EtJMWS78rbh7p0xHAeUwgkmqVTKvNRtdoC3fQ3klAoGBAJ8K\nYvSbjglX5RTURNBxePB44YXlupVZdTef66MlRdWhmzPEzc/2oWpafq0rKHQo6vym\nMhOpBRPJS2f6ALznGgLv6Kp8pmvrEWzLocEaI7tEZWkFlzwocPR52izKGTSlEFAm\nACoFJtrw99D+vksXhDtJkLtfT5VahoHM7QDoW9M5AoGACpzKAJElvd7bg54I9cnv\n1Riq2o1y714dqaiGQnSu1iJ7W4mWbKDtNxNTyFPnmMjSmYb1IkQ+6rhj7BHkh0c2\njX6N3Qiy6vpEcAv0r2Hnx0/Ykzp3D/7BVIGAW8Nzj7lh++pxg29OQ2UBtz5q6EsI\nSFW5Pz0gFTz8U3/phvVHrdg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "polyprose@shaped-infusion-435301-r4.iam.gserviceaccount.com",
+  "client_id": "102151862206527097631",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/polyprose%40shaped-infusion-435301-r4.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
