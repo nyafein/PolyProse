@@ -1,6 +1,7 @@
 # Ignore Streamlit secrets
 .streamlit/secrets.toml
 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -40,4 +41,3 @@ ipython_config.py
 .venv
 env/
 venv/
-
