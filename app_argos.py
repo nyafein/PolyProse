@@ -1,11 +1,37 @@
 import streamlit as st
 from streamlit_mic_recorder import mic_recorder, speech_to_text
 from transformers import BlenderbotTokenizer, BlenderbotForConditionalGeneration
+import argostranslate.package
+import argostranslate.translate
+import time
+import streamlit as st
 
-# In future... USE ARGOS!!!!!
 
-# Create two tabs -- One is "About me", one is "Poly Prose"
-tabs = st.tabs(["PolyProse", "About Me"])
+def load_language_package(from_code, to_code):
+    """Load the language package from Argos Translate."""
+    argostranslate.package.update_package_index()
+    available_packages = argostranslate.package.get_available_packages()
+    package_to_install = next(
+        filter(
+            lambda x: x.from_code == from_code and x.to_code == to_code,
+            available_packages
+        )
+    )
+    argostranslate.package.install_from_path(package_to_install.download())
+
+
+def translate_text(from_language: str, to_language: str, text: str) -> dict:
+    """Translates text from one language to another using Argos Translate."""
+
+    load_language_package(from_language, to_language)
+
+    translated_text = argostranslate.translate.translate(text, from_language, to_language)
+
+    return {"translatedText": translated_text}
+
+
+# Create two tabs -- One is "About me", one is "PolyProse"
+tabs = st.tabs(["PolyProse", "About Me", "Sources"])
 
 # FIRST TAB: Poly Prose (:
 with tabs[0]:
@@ -14,43 +40,25 @@ with tabs[0]:
     st.title(original_title)
     st.markdown(f"<h1 style='font-size: 50px; text-align: center;'>&#127760;</h1>", unsafe_allow_html=True)
 
-
-    # GOOGLE TRANSLATE / HANDLE INPUT
-    def translate_text(target: str, text: str) -> dict:
-        """Translates text into the target language."""
-        # OLD CODE: Create translate client for local use
-        # translate_client = translate.Client()
-        # NEW: Create translate client using service account credentials from Streamlit secrets <- For the cloud
-        translate_client = translate.Client(
-            credentials=st.secrets["google_translate"]["private_key"]
-        )
-        if isinstance(text, bytes):
-            text = text.decode("utf-8")
-        # Translate the text
-        result = translate_client.translate(text, target_language=target)
-        return result
-
-
     # LANGUAGE DROPDOWN - If more time, I would have liked to add more...
     option = st.selectbox(
         "Which language are we practicing today?",
-        ("Russian", "French", "Belarusian", "Polish", "Spanish", "Hindi"),
+        ("Russian", "French", "Polish", "Spanish", "Hindi"),
     )
 
-    # Set the variable to the language
-    lang_mapping = {"Russian": "ru", "French": "fr", "Belarusian": "be", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
+    # Set the variable to the language code
+    lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
     lang = lang_mapping.get(option, "en")
 
 
-    # Translate the title using Google Translate API (thanks to examples...)
     def translate_title(target_language: str) -> str:
-        """Translates the title into the target language."""
-        translation_result = translate_text(target_language, "Let's learn together!")
+        """Translates the title from English to the target language."""
+        translation_result = translate_text("en", target_language,
+                                            "Let's learn together!")
         return translation_result["translatedText"]
 
 
     # Update the title to the translated text based on the selected language!!
-    # First, make sure that the user actually chose something
     if option:
         translated_title = translate_title(lang)
         st.markdown(f"<h1 style='font-size: 24px; text-align: center;'>{translated_title}</h1>", unsafe_allow_html=True)
@@ -96,40 +104,43 @@ with tabs[0]:
         # Put what the user said in the history
         state.conversation_history.append(f"You: {text}")
 
-        # Translate!!
-        translated_text = translate_text("en", text)["translatedText"]
+        with st.spinner('Pondering...'):
+
+
+            translated_text = translate_text(lang, "en", text)["translatedText"]
 
         # Display BOTH!!!!!
-        display_user_message(text, translated_text)
+            display_user_message(text, translated_text)
 
         # MODEL TIME!
         # This was the billionth (not literally) model I tried to implement
-        # Ask me if you want to know more about the process. Believe me, I have stories and thoughts
-        model_name = "facebook/blenderbot-400M-distill"
-        tokenizer = BlenderbotTokenizer.from_pretrained(model_name)
-        model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
+            model_name = "facebook/blenderbot-400M-distill"
+            tokenizer = BlenderbotTokenizer.from_pretrained(model_name)
+            model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
 
         # Generate!
-        # Quick note -- The attention_mask helps the nonsense responses NOT Be in there. Plenty were before...
-        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-        reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"],
+            inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+            reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"],
                                    max_length=100)
-        response = tokenizer.decode(reply_ids[0], skip_special_tokens=True)
+            response = tokenizer.decode(reply_ids[0], skip_special_tokens=True)
 
         # Save!
-        st.session_state.ai_response = response
-        state.conversation_history.append(f"PolyProse: {response}")
+            st.session_state.ai_response = response
+            state.conversation_history.append(f"PolyProse: {response}")
 
-        # Okay, now we need to translate BACK because this is technically just for English
-        translated_response = translate_text(lang, response)["translatedText"]
+            translated_response = translate_text("en", lang, response)["translatedText"]
 
         # Display AI response and its translation in the same bubble
-        display_ai_message(response, translated_response)
+            display_ai_message(response, translated_response)
+
 
     # Display the conversation history and translations
     for entry in state.conversation_history:
         user_text = entry.split(": ", 1)[1]
-        translated_text = translate_text("en", user_text)["translatedText"]
+        translated_text = translate_text("en", lang, text)[
+            "translatedText"]
+
+
 
 # SECOND TAB -- All about me!
 with tabs[1]:
@@ -157,4 +168,20 @@ with tabs[1]:
 
         st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 
+with tabs[2]:
+    st.header("Sources")
 
+    argosurl = 'https://github.com/argosopentech/argos-translate'
+
+    st.markdown(f'''
+    <a href={argosurl}><button style="background-color:Green;">Argos Model</button></a>
+    ''',
+                unsafe_allow_html=True)
+
+    st.markdown(" ")
+
+    blenderurl = 'https://huggingface.co/docs/transformers/model_doc/blenderbot#transformers.BlenderbotForCausalLM'
+
+    st.markdown(f'''<a href={blenderurl}><button style="background-color:Green;">BlenderBot Model</button></a>
+    ''',
+                unsafe_allow_html=True)
