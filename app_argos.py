@@ -150,7 +150,7 @@ with tabs[1]:
                       "I am a senior at West Virginia University studying Data Science, Russian Studies, International Studies,"
                       " with a minor in French and a certificate in Global Competency with plans to pursue a doctoral degree. "
                       "My research revolves around all things Natural Language Processing, and"
-                      "I believe that the secrets of the world are woven within our words and can best be understood through machine learning "
+                      " I believe that the secrets of the world are woven within our words and can best be understood through machine learning "
                       "and genuine curiosity."
                       " My languages of interest are Belarusian, Russian, Polish, and French (and will happily invite more). What are yours?"
                       " Contact me at nyafein@gmail.com or visit me on LinkedIn to let me know!")
