@@ -161,7 +161,7 @@ with tabs[1]:
         st.write(' ')
 
     with col2:
-        st.image("C:/Users/nsf00/Pictures/Screenshots/headshot - Copy.png")
+        st.image("https://github.com/nyafein/headshot.png")
 
     with col3:
         st.write(' ')
