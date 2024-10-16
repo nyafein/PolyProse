@@ -161,8 +161,7 @@ with tabs[1]:
         st.write(' ')
 
     with col2:
-        st.image("https://github.com/nyafein/PolyProse/blob/main/headshot.png")
-
+        st.image("./headshot.png")
     with col3:
         st.write(' ')
 
