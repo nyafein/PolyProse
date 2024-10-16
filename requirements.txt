@@ -4,5 +4,5 @@ google-cloud-translate==2.0.1
 openai~=1.51.2
 transformers~=4.45.2
 safetensors~=0.4.5
-argostranslate
+argostranslate~=1.9.6
 torch==2.0.1

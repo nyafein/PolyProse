@@ -2,6 +2,11 @@ import streamlit as st
 from streamlit_mic_recorder import mic_recorder, speech_to_text
 from transformers import BlenderbotTokenizer, BlenderbotForConditionalGeneration
 from google.cloud import translate_v2 as translate
+import google.auth
+
+credentials, project = google.auth.default()
+
+# USE ARGOS!!!!!
 
 # Create two tabs -- One is "About me", one is "Poly Prose"
 tabs = st.tabs(["PolyProse", "About Me"])
@@ -18,7 +23,7 @@ with tabs[0]:
         """Translates text into the target language."""
         # OLD CODE: Create translate client for local use
         # translate_client = translate.Client()
-        # NEW: Create translate client using service account credentials from Streamlit secrets
+        # NEW: Create translate client using service account credentials from Streamlit secrets <- For the cloud
         translate_client = translate.Client(
             credentials=st.secrets["google_translate"]["private_key"]
         )
