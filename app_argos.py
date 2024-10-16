@@ -173,7 +173,7 @@ with tabs[2]:
     argosurl = 'https://github.com/argosopentech/argos-translate'
 
     st.markdown(f'''
-    <a href={argosurl}><button style="background-color:Green;">Argos Model</button></a>
+    <a href={argosurl}><button style="background-color:Blue;">Argos Model</button></a>
     ''',
                 unsafe_allow_html=True)
 
@@ -181,6 +181,6 @@ with tabs[2]:
 
     blenderurl = 'https://huggingface.co/docs/transformers/model_doc/blenderbot#transformers.BlenderbotForCausalLM'
 
-    st.markdown(f'''<a href={blenderurl}><button style="background-color:Green;">BlenderBot Model</button></a>
+    st.markdown(f'''<a href={blenderurl}><button style="background-color:Blue;">BlenderBot Model</button></a>
     ''',
                 unsafe_allow_html=True)
