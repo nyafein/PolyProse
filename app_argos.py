@@ -5,7 +5,7 @@ import argostranslate.package
 import argostranslate.translate
 import time
 
-
+# Get the Argos model up and running
 def load_language_package(from_code, to_code):
     """Load the language package from Argos Translate."""
     argostranslate.package.update_package_index()
@@ -18,7 +18,7 @@ def load_language_package(from_code, to_code):
     )
     argostranslate.package.install_from_path(package_to_install.download())
 
-
+# Make our translation function!
 def translate_text(from_language: str, to_language: str, text: str) -> dict:
     """Translates text from one language to another using Argos Translate."""
     load_language_package(from_language, to_language)
@@ -31,7 +31,7 @@ tabs = st.tabs(["PolyProse", "About Me", "Sources"])
 
 # FIRST TAB: Poly Prose (:
 with tabs[0]:
-    # NEW ADDITION!!! To not have errors... Put the try on (:
+    # Add a "Try"!!! This is very helpful
     try:
         # AESTHETICS - Put the title on!
         original_title = "PolyProse: Let's learn together!"
@@ -48,13 +48,11 @@ with tabs[0]:
         lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
         lang = lang_mapping.get(option, "en")
 
-
         # DEFINE ALL SORTS OF FUNCTIONS!
         def translate_title(target_language: str) -> str:
             """Translates the title from English to the target language."""
             translation_result = translate_text("en", target_language, "Let's learn together!")
             return translation_result["translatedText"]
-
 
         # Update the title to the translated text based on the selected language!!
         if option:
@@ -62,9 +60,7 @@ with tabs[0]:
             st.markdown(f"<h1 style='font-size: 24px; text-align: center;'>{translated_title}</h1>",
                         unsafe_allow_html=True)
 
-
         # MAKE CHAT BUBBLES
-        # First one shows what the user says
         def display_user_message(original_message, translated_message):
             st.markdown(f"""
                 <div style="background-color: #d1e7dd; padding: 10px; border-radius: 10px; margin: 5px 0;">
@@ -73,8 +69,6 @@ with tabs[0]:
                 </div>
             """, unsafe_allow_html=True)
 
-
-        # AI response! This was a little finicky... ):
         def display_ai_message(original_message, translated_message):
             st.markdown(f"""
                 <div style="background-color: #f8d7da; padding: 10px; border-radius: 10px; margin: 5px 0;">
@@ -83,16 +77,8 @@ with tabs[0]:
                 </div>
             """, unsafe_allow_html=True)
 
-
         # SPEECH TO TEXT
-
-        # There is the distinct possibility that anything with "state" does nothing
-        # But if there's one thing about coding that I've learned, it's that you don't mess with something
-        # that kinda works
-        state = st.session_state
-
-        if 'conversation_history' not in state:
-            state.conversation_history = []
+        conversation_history = []
 
         c1, c2 = st.columns(2)
         with c1:
@@ -101,46 +87,46 @@ with tabs[0]:
             text = speech_to_text(language=lang, use_container_width=True, just_once=True, key='STT')
 
         if text:
-            # Put what the user said in the history
-            state.conversation_history.append(f"You: {text}")
+            conversation_history.append(f"You: {text}")
 
-            with st.spinner('Pondering...'):
-                translated_text = translate_text(lang, "en", text)["translatedText"]
 
-            # Display BOTH
+            # Translate user input
+            translated_text = translate_text(lang, "en", text)["translatedText"]
+
+            # Display user message and translation
             display_user_message(text, translated_text)
 
-            # MODEL TIME!
-            model_name = "facebook/blenderbot-400M-distill"
-            tokenizer = BlenderbotTokenizer.from_pretrained(model_name)
-            model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
+            with st.spinner('Pondering...'):
+                # MODEL TIME!
+                model_name = "facebook/blenderbot-400M-distill"
+                tokenizer = BlenderbotTokenizer.from_pretrained(model_name)
+                model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
 
-            # Generate!
-            inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-            reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"],
-                                       max_length=100)
-            response = tokenizer.decode(reply_ids[0], skip_special_tokens=True)
+                # Generate AI response
+                inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+                reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"],
+                                           max_length=100)
+                response = tokenizer.decode(reply_ids[0], skip_special_tokens=True)
 
-            # Save!
-            st.session_state.ai_response = response
-            state.conversation_history.append(f"PolyProse: {response}")
-
-            translated_response = translate_text("en", lang, response)["translatedText"]
-
-            # Display AI response and its translation
-            display_ai_message(response, translated_response)
+                # Display AI response and its translation
+                translated_response = translate_text("en", lang, response)["translatedText"]
+                display_ai_message(response, translated_response)
 
         # Display the conversation history and translations
-        for entry in state.conversation_history:
+        for entry in conversation_history:
             user_text = entry.split(": ", 1)[1]
             translated_text = translate_text("en", lang, user_text)["translatedText"]
+
+        # ADD REFRESH BUTTON!!! Long story short, we want to redo after every talk
+        if st.button("Refresh"):
+            st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
         time.sleep(1)
-        st.experimental_rerun()
+        st.rerun()
 
-# SECOND TAB: About Me -- unchanged
+# SECOND TAB: About Me
 with tabs[1]:
     st.header("About Me")
     bio = st.markdown(
@@ -163,14 +149,21 @@ with tabs[1]:
         st.write(' ')
         st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 
-# THIRD TAB: Sources -- unchanged
+# THIRD TAB: Sources
 with tabs[2]:
     st.header("Sources")
 
     argosurl = 'https://github.com/argosopentech/argos-translate'
-    st.markdown(f'<a href={argosurl}><button style="background-color:Blue;">Argos Model</button></a>',
-                unsafe_allow_html=True)
+
 
     blenderurl = 'https://huggingface.co/docs/transformers/model_doc/blenderbot#transformers.BlenderbotForCausalLM'
-    st.markdown(f'<a href={blenderurl}><button style="background-color:Blue;">BlenderBot Model</button></a>',
-                unsafe_allow_html=True)
+
+    st.markdown(
+        f'<a href={argosurl}><button style="background-color:lightblue; color: black;">📖 Argos Model</button></a>',
+        unsafe_allow_html=True)
+
+    # For BlenderBot Model
+    st.markdown(f'<a href={blenderurl}><button style="background-color:lightblue; color: black;">🤖 BlenderBot Model</button></a>',
+        unsafe_allow_html=True)
+
+
