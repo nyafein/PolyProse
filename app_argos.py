@@ -5,7 +5,10 @@ import argostranslate.package
 import argostranslate.translate
 import time
 
+
 # Get the Argos model up and running
+
+@st.cache
 def load_language_package(from_code, to_code):
     """Load the language package from Argos Translate."""
     argostranslate.package.update_package_index()
@@ -17,6 +20,7 @@ def load_language_package(from_code, to_code):
         )
     )
     argostranslate.package.install_from_path(package_to_install.download())
+
 
 # Make our translation function!
 def translate_text(from_language: str, to_language: str, text: str) -> dict:
@@ -48,17 +52,20 @@ with tabs[0]:
         lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
         lang = lang_mapping.get(option, "en")
 
+
         # DEFINE ALL SORTS OF FUNCTIONS!
         def translate_title(target_language: str) -> str:
             """Translates the title from English to the target language."""
             translation_result = translate_text("en", target_language, "Let's learn together!")
             return translation_result["translatedText"]
 
+
         # Update the title to the translated text based on the selected language!!
         if option:
             translated_title = translate_title(lang)
             st.markdown(f"<h1 style='font-size: 24px; text-align: center;'>{translated_title}</h1>",
                         unsafe_allow_html=True)
+
 
         # MAKE CHAT BUBBLES
         def display_user_message(original_message, translated_message):
@@ -69,6 +76,7 @@ with tabs[0]:
                 </div>
             """, unsafe_allow_html=True)
 
+
         def display_ai_message(original_message, translated_message):
             st.markdown(f"""
                 <div style="background-color: #f8d7da; padding: 10px; border-radius: 10px; margin: 5px 0;">
@@ -76,6 +84,7 @@ with tabs[0]:
                     <strong style="color: black;">Translation:</strong> <span style="color: black;">{translated_message}</span>
                 </div>
             """, unsafe_allow_html=True)
+
 
         # SPEECH TO TEXT
         conversation_history = []
@@ -88,7 +97,6 @@ with tabs[0]:
 
         if text:
             conversation_history.append(f"You: {text}")
-
 
             # Translate user input
             translated_text = translate_text(lang, "en", text)["translatedText"]
@@ -155,7 +163,6 @@ with tabs[2]:
 
     argosurl = 'https://github.com/argosopentech/argos-translate'
 
-
     blenderurl = 'https://huggingface.co/docs/transformers/model_doc/blenderbot#transformers.BlenderbotForCausalLM'
 
     st.markdown(
@@ -163,7 +170,6 @@ with tabs[2]:
         unsafe_allow_html=True)
 
     # For BlenderBot Model
-    st.markdown(f'<a href={blenderurl}><button style="background-color:lightblue; color: black;">🤖 BlenderBot Model</button></a>',
+    st.markdown(
+        f'<a href={blenderurl}><button style="background-color:lightblue; color: black;">🤖 BlenderBot Model</button></a>',
         unsafe_allow_html=True)
-
-
