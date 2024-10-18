@@ -8,7 +8,7 @@ import time
 
 # Get the Argos model up and running
 
-@st.cache
+
 def load_language_package(from_code, to_code):
     """Load the language package from Argos Translate."""
     argostranslate.package.update_package_index()
