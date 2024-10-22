@@ -54,7 +54,7 @@ with tabs[0]:
         # Load Blenderbot model once
         tokenizer, model = load_blenderbot_model()
 
-        # Speech-to-text (Optional for testing)
+        # Speech-to-text
         c1, c2 = st.columns(2)
         with c1:
             st.write("Convert speech to text:")
@@ -74,7 +74,7 @@ with tabs[0]:
             st.write(f"PolyProse: {ai_response} (Translated: {translated_ai_response})")
 
         if st.button("Refresh"):
-            st.experimental_rerun()
+            st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
@@ -84,8 +84,13 @@ with tabs[1]:
     st.header("About Me")
     bio = st.markdown("""
         Hi! My name is Nya Feinstein :blush: \n
-        I am a senior at West Virginia University studying Data Science, Russian Studies, International Studies...
-    """)
+        I am a senior at West Virginia University studying Data Science, Russian Studies, International Studies,
+        with a minor in French and a certificate in Global Competency with plans to pursue a doctoral degree.
+        My research revolves around all things Natural Language Processing, and
+         I believe that the secrets of the world are woven within our words and can best be understood through machine learning
+        and genuine curiosity.
+        My languages of interest are Belarusian, Russian, Polish, and French (and will happily invite more). What are yours?
+        Contact me at nyafein@gmail.com or visit me on LinkedIn to let me know!    """)
     st.image("./headshot.png")
 
 # Third Tab - Sources
