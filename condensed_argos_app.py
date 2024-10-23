@@ -110,7 +110,7 @@ with tabs[0]:
 
             # AI Back to language
                 translated_ai_response = translate_text("en", lang, ai_response)
-                display_user_message(ai_response,  translated_ai_response)
+                display_ai_message(ai_response,  translated_ai_response)
             #st.write(f"PolyProse: {ai_response} (Translated: {translated_ai_response})")
 
             # Display user message and translation
