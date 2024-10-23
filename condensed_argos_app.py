@@ -4,7 +4,7 @@ from transformers import BlenderbotTokenizer, BlenderbotForConditionalGeneration
 import argostranslate.package
 import argostranslate.translate
 
-# Cache the language model package for translation
+# Cache the language model package for translation (Caching is very useful)
 @st.cache_resource
 def load_language_package(from_code, to_code):
     argostranslate.package.update_package_index()
@@ -14,13 +14,13 @@ def load_language_package(from_code, to_code):
     )
     argostranslate.package.install_from_path(package_to_install.download())
 
-# Translation function
+# Translation function!! This works just fine
 def translate_text(from_language, to_language, text):
     load_language_package(from_language, to_language)
     translated_text = argostranslate.translate.translate(text, from_language, to_language)
     return translated_text
 
-# Cache the Blenderbot model to avoid reloading
+# Cache the Blenderbot model to avoid reloading (if not, it uses far too many resources)
 @st.cache_resource
 def load_blenderbot_model():
     model_name = "facebook/blenderbot-400M-distill"
@@ -28,7 +28,7 @@ def load_blenderbot_model():
     model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
     return tokenizer, model
 
-# Chat response generation
+# Function for response
 def generate_response(input_text, tokenizer, model):
     inputs = tokenizer(input_text, return_tensors="pt", padding=True, truncation=True)
     reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], max_length=50)
@@ -51,7 +51,7 @@ with tabs[0]:
         lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
         lang = lang_mapping.get(option, "en")
 
-        # Load Blenderbot model once
+        # Load Blenderbot model once (and ONLY once please...)
         tokenizer, model = load_blenderbot_model()
 
         # Speech-to-text
@@ -62,14 +62,14 @@ with tabs[0]:
             user_text = speech_to_text(language=lang, use_container_width=True, just_once=True, key='STT')
 
         if user_text:
-            # Translate and display user message
+            # Translate and display (this BETTER work)
             translated_user_text = translate_text(lang, "en", user_text)
             st.write(f"You: {user_text} (Translated: {translated_user_text})")
 
-            # Generate AI response
+            # Response
             ai_response = generate_response(translated_user_text, tokenizer, model)
 
-            # Translate AI response back to user’s language
+            # AI Back to language
             translated_ai_response = translate_text("en", lang, ai_response)
             st.write(f"PolyProse: {ai_response} (Translated: {translated_ai_response})")
 
@@ -96,5 +96,16 @@ with tabs[1]:
 # Third Tab - Sources
 with tabs[2]:
     st.header("Sources")
-    st.markdown("[Argos Translate](https://github.com/argosopentech/argos-translate)")
-    st.markdown("[BlenderBot Model](https://huggingface.co/facebook/blenderbot-400M-distill)")
+
+    argosurl = 'https://github.com/argosopentech/argos-translate'
+
+    blenderurl = 'https://huggingface.co/docs/transformers/model_doc/blenderbot#transformers.BlenderbotForCausalLM'
+
+    st.markdown(
+        f'<a href={argosurl}><button style="background-color:lightblue; color: black;">📖 Argos Model</button></a>',
+        unsafe_allow_html=True)
+
+    # For BlenderBot Model
+    st.markdown(
+        f'<a href={blenderurl}><button style="background-color:lightblue; color: black;">🤖 BlenderBot Model</button></a>',
+        unsafe_allow_html=True)
