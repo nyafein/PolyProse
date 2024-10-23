@@ -11,8 +11,7 @@ def load_language_package(from_code, to_code):
     argostranslate.package.update_package_index()
     available_packages = argostranslate.package.get_available_packages()
     package_to_install = next(
-        filter(lambda x: x.from_code == from_code and x.to_code == to_code, available_packages)
-    )
+        filter(lambda x: x.from_code == from_code and x.to_code == to_code, available_packages))
     argostranslate.package.install_from_path(package_to_install.download())
 
 
@@ -31,6 +30,24 @@ def load_blenderbot_model():
     model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
     return tokenizer, model
 
+# User message
+def display_user_message(original_message, translated_message):
+    st.markdown(f"""
+        <div style="background-color: #d1e7dd; padding: 10px; border-radius: 10px; margin: 5px 0;">
+            <strong style="color: black;">You:</strong> <span style="color: black;">{original_message}</span><br>
+            <strong style="color: black;">Translation:</strong> <span style="color: black;">{translated_message}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+
+def display_ai_message(original_message, translated_message):
+    st.markdown(f"""
+        <div style="background-color: #f8d7da; padding: 10px; border-radius: 10px; margin: 5px 0;">
+            <strong style="color: black;">PolyProse:</strong> <span style="color: black;">{original_message}</span><br>
+            <strong style="color: black;">Translation:</strong> <span style="color: black;">{translated_message}</span>
+        </div>
+    """, unsafe_allow_html=True)
+
 
 # Function for response
 def generate_response(input_text, tokenizer, model):
@@ -38,11 +55,10 @@ def generate_response(input_text, tokenizer, model):
     reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], max_length=50)
     return tokenizer.decode(reply_ids[0], skip_special_tokens=True)
 
-
 def translate_title(target_language: str) -> str:
     """Translates the title from English to the target language."""
     translation_result = translate_text("en", target_language, "Let's learn together!")
-    return translation_result["translatedText"]
+    return translation_result
 
 
 # UI - Three tabs
@@ -84,14 +100,22 @@ with tabs[0]:
         if user_text:
             # Translate and display (this BETTER work)
             translated_user_text = translate_text(lang, "en", user_text)
-            st.write(f"You: {user_text} (Translated: {translated_user_text})")
+            display_user_message(user_text, translated_user_text)
+            #st.write(f"You: {user_text} (Translated: {translated_user_text})")
 
-            # Response
-            ai_response = generate_response(translated_user_text, tokenizer, model)
+            with st.spinner('Pondering...'):
+
+                # Response
+                ai_response = generate_response(translated_user_text, tokenizer, model)
 
             # AI Back to language
-            translated_ai_response = translate_text("en", lang, ai_response)
-            st.write(f"PolyProse: {ai_response} (Translated: {translated_ai_response})")
+                translated_ai_response = translate_text("en", lang, ai_response)
+                display_user_message(ai_response,  translated_ai_response)
+            #st.write(f"PolyProse: {ai_response} (Translated: {translated_ai_response})")
+
+            # Display user message and translation
+
+
 
         if st.button("Refresh"):
             st.rerun()
