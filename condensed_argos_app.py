@@ -4,6 +4,7 @@ from transformers import BlenderbotTokenizer, BlenderbotForConditionalGeneration
 import argostranslate.package
 import argostranslate.translate
 
+
 # Cache the language model package for translation (Caching is very useful)
 @st.cache_resource
 def load_language_package(from_code, to_code):
@@ -14,11 +15,13 @@ def load_language_package(from_code, to_code):
     )
     argostranslate.package.install_from_path(package_to_install.download())
 
+
 # Translation function!! This works just fine
 def translate_text(from_language, to_language, text):
     load_language_package(from_language, to_language)
     translated_text = argostranslate.translate.translate(text, from_language, to_language)
     return translated_text
+
 
 # Cache the Blenderbot model to avoid reloading (if not, it uses far too many resources)
 @st.cache_resource
@@ -28,11 +31,19 @@ def load_blenderbot_model():
     model = BlenderbotForConditionalGeneration.from_pretrained(model_name)
     return tokenizer, model
 
+
 # Function for response
 def generate_response(input_text, tokenizer, model):
     inputs = tokenizer(input_text, return_tensors="pt", padding=True, truncation=True)
     reply_ids = model.generate(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"], max_length=50)
     return tokenizer.decode(reply_ids[0], skip_special_tokens=True)
+
+
+def translate_title(target_language: str) -> str:
+    """Translates the title from English to the target language."""
+    translation_result = translate_text("en", target_language, "Let's learn together!")
+    return translation_result["translatedText"]
+
 
 # UI - Three tabs
 tabs = st.tabs(["PolyProse", "About Me", "Sources"])
@@ -40,13 +51,20 @@ tabs = st.tabs(["PolyProse", "About Me", "Sources"])
 # First Tab - PolyProse
 with tabs[0]:
     try:
-        st.title("PolyProse: Let's learn together!")
-        st.markdown("<h1 style='font-size: 50px; text-align: center;'>&#127760;</h1>", unsafe_allow_html=True)
+        # AESTHETICS - Put the title on!
+        original_title = "PolyProse: Let's learn together!"
+        st.title(original_title)
+        st.markdown(f"<h1 style='font-size: 50px; text-align: center;'>&#127760;</h1>", unsafe_allow_html=True)
 
         option = st.selectbox(
             "Which language are we practicing today?",
             ("Russian", "French", "Polish", "Spanish", "Hindi"),
         )
+        # Update the title to the translated text based on the selected language!!
+        if option:
+            translated_title = translate_title(lang)
+            st.markdown(f"<h1 style='font-size: 24px; text-align: center;'>{translated_title}</h1>",
+                        unsafe_allow_html=True)
 
         lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
         lang = lang_mapping.get(option, "en")
