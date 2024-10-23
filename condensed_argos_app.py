@@ -60,14 +60,16 @@ with tabs[0]:
             "Which language are we practicing today?",
             ("Russian", "French", "Polish", "Spanish", "Hindi"),
         )
+
+        lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
+        lang = lang_mapping.get(option, "en")
+
         # Update the title to the translated text based on the selected language!!
         if option:
             translated_title = translate_title(lang)
             st.markdown(f"<h1 style='font-size: 24px; text-align: center;'>{translated_title}</h1>",
                         unsafe_allow_html=True)
 
-        lang_mapping = {"Russian": "ru", "French": "fr", "Polish": "pl", "Spanish": "es", "Hindi": "hi"}
-        lang = lang_mapping.get(option, "en")
 
         # Load Blenderbot model once (and ONLY once please...)
         tokenizer, model = load_blenderbot_model()
